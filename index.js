@@ -24,7 +24,7 @@ function displayBooks(arr) {
         bookInfo.appendChild(document.createElement('li')).innerText = `Name: ${book.title}`;
         bookInfo.appendChild(document.createElement('li')).innerText = `Author: ${book.author}`;
         bookInfo.appendChild(document.createElement('li')).innerText = `Number of pages: ${book.pages}`;
-        bookInfo.appendChild(document.createElement('li')).innerText = `Read Status: ${book.read ? 'read' : 'not yet'}`;
+        bookInfo.appendChild(document.createElement('li')).innerText = `Read status: ${book.read ? 'read' : 'not yet'}`;
 
         let removeButton = document.createElement('button');
         removeButton.innerText = 'Remove book'
@@ -55,6 +55,10 @@ function updateBooks(arr) {
 
     document.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', e => removeBook(e))
+    })
+
+    document.querySelectorAll('.read-status-btn').forEach(btn => {
+        btn.addEventListener('click', e => changeReadStatus(e))
     })
 }
 
