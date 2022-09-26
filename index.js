@@ -1,4 +1,5 @@
-myLibrary = [];
+let myLibrary = [];
+const DOMLibrary = document.querySelector('.library');
 
 class Book {
     constructor(title, author, pages, isRead, key) {
@@ -10,45 +11,53 @@ class Book {
     }
 }
 
-function addBookToLibrary(book) {
-    myLibrary.push(book);
+const addBookToLibrary = (title, author, pages, isRead, key) => {
+    myLibrary.push(new Book(title, author, pages, isRead, key));
+}
+
+addBookToLibrary('LOTR', 'J.R.R. Tolkien', 295, false, 0);
+addBookToLibrary('Game of Thrones', 'George R.R. Martin', 295, false, 1);
+addBookToLibrary('Harry Potter', 'J.K. Rowling', 295, true, 2);
+addBookToLibrary('Famous Five', 'Enid Blyton', 295, true, 3);
+
+const createNewCard = (title, author, pages, isRead, key) => {
+    const newCard = document.createElement('div');
+    newCard.classList.add('book-card');
+
+    const bookInfo = document.createElement('ul');
+    bookInfo.appendChild(document.createElement('li')).innerText = `Title: ${title}`;
+    bookInfo.appendChild(document.createElement('li')).innerText = `Author: ${author}`;
+    bookInfo.appendChild(document.createElement('li')).innerText = `Number of pages: ${pages}`;
+    bookInfo.appendChild(document.createElement('li')).innerText = `Read status: ${isRead ? 'read' : 'not yet'}`;
+
+    let removeButton = document.createElement('button');
+    removeButton.innerText = 'Remove book'
+    removeButton.classList.add('remove-btn');
+
+    let readStatusBtn = document.createElement('button');
+    readStatusBtn.innerText = 'Change read status';
+    readStatusBtn.classList.add('read-status-btn');
+
+    newCard.appendChild(bookInfo);
+    newCard.appendChild(removeButton);
+    newCard.appendChild(readStatusBtn);
+    newCard.setAttribute('data-key', key);
+
+    return newCard;
 }
 
 function displayBooks(arr) {
     arr.forEach(book => {
-        let newBookCard = document.createElement('div');
-        newBookCard.classList.add('book-card');
-        let index = myLibrary.indexOf(book);
-
-        let bookInfo = document.createElement('ul');
-        bookInfo.appendChild(document.createElement('li')).innerText = `Name: ${book.title}`;
-        bookInfo.appendChild(document.createElement('li')).innerText = `Author: ${book.author}`;
-        bookInfo.appendChild(document.createElement('li')).innerText = `Number of pages: ${book.pages}`;
-        bookInfo.appendChild(document.createElement('li')).innerText = `Read status: ${book.read ? 'read' : 'not yet'}`;
-
-        let removeButton = document.createElement('button');
-        removeButton.innerText = 'Remove book'
-        removeButton.classList.add('remove-btn');
-
-        let readStatusBtn = document.createElement('button');
-        readStatusBtn.innerText = 'Change read status';
-        readStatusBtn.classList.add('read-status-btn');
-
-        newBookCard.appendChild(bookInfo);
-        newBookCard.appendChild(removeButton);
-        newBookCard.appendChild(readStatusBtn);
-        newBookCard.setAttribute('data-key', index);
-        
-
-        document.querySelector('.library').appendChild(newBookCard);
+        console.log('here');
+        DOMLibrary.appendChild(createNewCard(book.title, book.author, book.pages, book.read, book.key));
     })
 }
 
 function updateBooks(arr) {
-    let lastChild = document.querySelector('.library').lastChild;
+    let lastChild = DOMLibrary.lastChild;
     while(lastChild) {
-        document.querySelector('.library').removeChild(lastChild);
-        lastChild = document.querySelector('.library').lastChild;
+        DOMLibrary.removeChild(lastChild);
+        lastChild = DOMLibrary.lastChild;
     }
 
     displayBooks(arr);
@@ -76,8 +85,6 @@ function changeReadStatus(e) {
     book.read = book.read ? false : true;
 
    parent.querySelectorAll('li')[3].innerText = parent.querySelectorAll('li')[3].innerText === 'Read status: read' ? 'Read status: not yet read' : 'Read status: read';
-    
-    console.log(myLibrary)
 }
 
 document.querySelector('.add-btn').addEventListener('click', () => {
@@ -91,11 +98,9 @@ document.querySelector('.submit-btn').addEventListener('click', (e) => {
     const pages = document.getElementById('book-pages');
     const selectionInput = document.getElementById('book-read-status');
     const isRead = selectionInput.options[selectionInput.selectedIndex].value === 'yes' ? true : false;
-
     const key = myLibrary.length
 
-    const newBook = new Book(title.value, author.value, pages.value, isRead, key);
-    myLibrary.push(newBook);
+    addBookToLibrary(title.value, author.value, pages.value, isRead, key)
     updateBooks(myLibrary);
 
     title.value = '';
@@ -104,15 +109,6 @@ document.querySelector('.submit-btn').addEventListener('click', (e) => {
     document.querySelector('form').classList.add('hidden');
 })
 
-addBookToLibrary(new Book('LOTR', 'J.R.R. Tolkien', 295, false, 0));
-addBookToLibrary(new Book('Game of Thrones', 'George R.R. Martin', 295, false, 1));
-addBookToLibrary(new Book('Harry Potter', 'J.K. Rowling', 295, true, 3));
-addBookToLibrary(new Book('Famous Five', 'Enid Blyton', 295, true, 3));
-
-console.log(myLibrary);
-
-displayBooks(myLibrary);
-
 document.querySelectorAll('.remove-btn').forEach(btn => {
     btn.addEventListener('click', e => removeBook(e))
 })
@@ -120,3 +116,5 @@ document.querySelectorAll('.remove-btn').forEach(btn => {
 document.querySelectorAll('.read-status-btn').forEach(btn => {
     btn.addEventListener('click', e => changeReadStatus(e))
 })
+
+displayBooks(myLibrary);
